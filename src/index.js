@@ -8,9 +8,12 @@ const LABEL = '!LOGGER!';
 const moment = require('moment');
 require('winston-daily-rotate-file');
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
-    return `${timestamp} [${label}] ${level}: ${message}`;
-});
+const getFormat = (showTimestamp) => {
+    return printf(({ level, message, label, timestamp }) => {
+        return showTimestamp ? `${timestamp} [${label}] ${level}: ${message}` : `[${label}] ${level}: ${message}`;
+    });
+}
+
 const timezone = () => {
     return moment().format('DD-MM-YYYY HH:mm:ss');
 };
@@ -28,7 +31,7 @@ module.exports = (options) => {
                 format: combine(
                     label({ label: options.service || LABEL }),
                     timestamp({ format: timezone }),
-                    myFormat,
+                    getFormat(!options.disableTimestamp),
                     format.splat()
                 )
             }),
@@ -40,7 +43,7 @@ module.exports = (options) => {
                 format: combine(
                     label({ label: options.service || LABEL }),
                     timestamp({ format: timezone }),
-                    myFormat,
+                    getFormat(!options.disableTimestamp),
                     format.splat()
                 ),
                 filename: path.join(options.path || pathLog, 'info-%DATE%.log'),
@@ -58,7 +61,7 @@ module.exports = (options) => {
                 format: combine(
                     label({ label: options.service || LABEL }),
                     timestamp({ format: timezone }),
-                    myFormat
+                    getFormat(!options.disableTimestamp),
                 )
             }),
             // errors log file
@@ -69,7 +72,7 @@ module.exports = (options) => {
                 format: combine(
                     label({ label: options.service || LABEL }),
                     timestamp({ format: timezone }),
-                    myFormat
+                    getFormat(!options.disableTimestamp),
                 ),
                 filename: path.join(options.path || pathLog, 'error-%DATE%.log'),
                 json: true,
