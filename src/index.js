@@ -54,7 +54,7 @@ module.exports = (options) => {
                 maxFiles: '14d'
             }),
             // errors console log
-            new winston.transports.Console({
+            /*new winston.transports.Console({
                 level: 'error',
                 name: 'error-console',
                 colorize: true,
@@ -63,7 +63,7 @@ module.exports = (options) => {
                     timestamp({ format: timezone }),
                     getFormat(!options.disableTimestamp),
                 )
-            }),
+            }),*/
             // errors log file
             new winston.transports.DailyRotateFile({
                 level: 'error',
